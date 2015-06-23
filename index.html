@@ -116,8 +116,13 @@
                     createBubble(coords.flaskTube.start.x, coords.flaskTube.start.y)
                 ],
                 tube: [
-                    createBubble(coords.tube[0].x, coords.tube[0].y - 50)
-                    //createBubble(coords.flaskTube.start.x, coords.flaskTube.start.y)
+                    createBubble(coords.tube[0].x, coords.tube[0].y),
+                    createBubble(coords.tube[1].x, coords.tube[1].y),
+                    createBubble(coords.tube[2].x, coords.tube[2].y),
+                    createBubble(coords.tube[3].x, coords.tube[3].y),
+                    createBubble(coords.tube[4].x, coords.tube[4].y),
+                    createBubble(coords.tube[4].x, coords.tube[4].y + 100)
+
                 ]
             };
 
@@ -136,6 +141,22 @@
            var moveAmount = 30 / delta;
 
             for (var i = 0; i < bubbles.flaskTube.length; i++) {
+                bubble = bubbles.flaskTube[i];
+
+                y = parseFloat(bubble.getAttribute('cy')) - moveAmount;
+
+                if (y <= coords.flaskTube.end.y) {
+                    y = coords.flaskTube.start.y;
+                }
+
+                moveBubble(bubble, null, y);
+            }
+        }
+
+        function animateTube (delta) {
+           var moveAmount = 30 / delta;
+
+            for (var i = 0; i < bubbles.tube.length; i++) {
                 bubble = bubbles.flaskTube[i];
 
                 y = parseFloat(bubble.getAttribute('cy')) - moveAmount;
