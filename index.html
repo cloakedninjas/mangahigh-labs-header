@@ -55,6 +55,8 @@
             </g>
           </g>
         </g>
+
+
       </g>
       <path
           d="M846.068995,209.00113 L737.277655,209.00113 C735.234428,209.00113 733.579984,207.342475 733.579984,205.296413 L733.579984,36.4671674 L701.885654,36.4671674 L701.885654,101.564337 C701.885654,103.610399 700.230154,105.269054 698.187982,105.269054 L659.450116,105.269054 C657.407945,105.269054 655.752445,103.610399 655.752445,101.564337 L655.752445,-7.28342318 L571.234232,-7.28342318 L571.234232,107.083257 C571.234232,109.130377 569.578732,110.787974 567.536561,110.787974 C565.494389,110.787974 563.838889,109.130377 563.838889,107.083257 L563.838889,-10.9881402 C563.838889,-13.0352609 565.494389,-14.6928571 567.536561,-14.6928571 L659.450116,-14.6928571 C661.492288,-14.6928571 663.147788,-13.0352609 663.147788,-10.9881402 L663.147788,97.8596202 L694.490311,97.8596202 L694.490311,32.7624504 C694.490311,30.7163881 696.144755,29.0577334 698.187982,29.0577334 L737.277655,29.0577334 C739.319827,29.0577334 740.975327,30.7163881 740.975327,32.7624504 L740.975327,201.591696 L842.371323,201.591696 L842.371323,102.497523 C842.371323,100.450402 844.026824,98.7928057 846.068995,98.7928057 C848.112223,98.7928057 849.766667,100.450402 849.766667,102.497523 L849.766667,205.296413 C849.766667,207.342475 841.446352,209.00113 839.403124,209.00113"
@@ -104,7 +106,17 @@
         x: 737,
         y: 193
       }
-    ]
+    ],
+    logoTube: {
+      start: {
+        x: 846,
+        y: 193
+      },
+      end: {
+        x: 846,
+        y: 47
+      }
+    }
   };
 
   function createBubble(x, y, segment) {
@@ -145,6 +157,10 @@
           createBubble(coords.tube[3].x, coords.tube[3].y, 3),
           createBubble(coords.tube[4].x, coords.tube[4].y, 4),
           createBubble(coords.tube[4].x, coords.tube[4].y + 100, 4)
+        ],
+        logoTube: [
+          createBubble(coords.logoTube.start.x, coords.logoTube.start.y - 50),
+          createBubble(coords.logoTube.start.x, coords.logoTube.start.y)
         ]
       };
 
@@ -154,8 +170,9 @@
 
     animateFlaskTube(delta);
     animateTube(delta);
+    animateLogoTube(delta);
 
-    requestAnimationFrame(animate);
+    //requestAnimationFrame(animate);
 
     lastTime = now;
   }
@@ -241,11 +258,25 @@
           break;
       }
 
-
-
-
-
       moveBubble(bubble, x, y);
+    }
+  }
+
+  function animateLogoTube(delta) {
+    var moveAmount = 30 / delta,
+        y = null,
+        bubble;
+
+    for (var i = 0; i < bubbles.logoTube.length; i++) {
+      bubble = bubbles.logoTube[i];
+
+      y = parseFloat(bubble.getAttribute('cy')) - moveAmount;
+
+      if (y <= coords.logoTube.end.y) {
+        y = coords.logoTube.start.y;
+      }
+
+      moveBubble(bubble, null, y);
     }
   }
 
