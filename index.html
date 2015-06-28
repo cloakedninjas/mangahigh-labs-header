@@ -116,15 +116,25 @@
         x: 846,
         y: 47
       }
+    },
+    flaskBase: {
+      left: 500,
+      right: 636
     }
   };
 
-  function createBubble(x, y, segment) {
+  var moveSpeed = 25;
+
+  function createBubble(x, y, segment, radius) {
     var bubble = document.createElementNS("http://www.w3.org/2000/svg", "circle");
     bubble.setAttribute('fill', '#C7B7DF');
     bubble.setAttribute('cx', x);
     bubble.setAttribute('cy', y);
-    bubble.setAttribute('r', '4.5');
+
+    if (radius === undefined) {
+      radius = 4.5;
+    }
+    bubble.setAttribute('r', radius);
 
     if (segment !== undefined) {
       bubble.setAttribute('segment', segment);
@@ -135,7 +145,7 @@
     return bubble;
   }
 
-  function moveBubble(bubble, x, y) {
+  function moveBubble (bubble, x, y) {
     if (x) {
       bubble.setAttribute('cx', x);
     }
@@ -161,24 +171,26 @@
         logoTube: [
           createBubble(coords.logoTube.start.x, coords.logoTube.start.y - 50),
           createBubble(coords.logoTube.start.x, coords.logoTube.start.y)
-        ]
+        ],
+        boilingFlask: []
       };
 
-  function animate() {
+  function animate () {
     var now = (new Date()).getTime(),
         delta = now - lastTime;
 
     animateFlaskTube(delta);
     animateTube(delta);
     animateLogoTube(delta);
+    boilingFlask(delta);
 
-    //requestAnimationFrame(animate);
+    requestAnimationFrame(animate);
 
     lastTime = now;
   }
 
-  function animateFlaskTube(delta) {
-    var moveAmount = 30 / delta,
+  function animateFlaskTube (delta) {
+    var moveAmount = moveSpeed / delta,
         y = null,
         bubble;
 
@@ -195,8 +207,8 @@
     }
   }
 
-  function animateTube(delta) {
-    var moveAmount = 30 / delta,
+  function animateTube (delta) {
+    var moveAmount = moveSpeed / delta,
         bubble, segment, x, y;
 
     for (var i = 0; i < bubbles.tube.length; i++) {
@@ -262,8 +274,8 @@
     }
   }
 
-  function animateLogoTube(delta) {
-    var moveAmount = 30 / delta,
+  function animateLogoTube (delta) {
+    var moveAmount = moveSpeed / delta,
         y = null,
         bubble;
 
@@ -278,6 +290,33 @@
 
       moveBubble(bubble, null, y);
     }
+  }
+
+  function boilingFlask (delta) {
+    var bubble, y, moveAmount = 30 / delta;
+
+    if (Math.random() > 0.3) {
+      var x = randomIntFromInterval(coords.flaskBase.left, coords.flaskBase.right);
+
+      bubbles.boilingFlask.push(createBubble(x, 180, undefined, 2));
+    }
+
+    for (var i = 0; i < bubbles.boilingFlask.length; i++) {
+      bubble = bubbles.boilingFlask[i];
+
+      y = parseFloat(bubble.getAttribute('cy')) - moveAmount;
+
+      moveBubble(bubble, null, y);
+
+      if (y <= 160) {
+        img.removeChild(bubble);
+        bubbles.boilingFlask.splice(i, 1);
+      }
+    }
+  }
+
+  function randomIntFromInterval (min,max) {
+    return Math.floor(Math.random()*(max-min+1)+min);
   }
 
   requestAnimationFrame(animate);
