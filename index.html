@@ -88,12 +88,16 @@
             ]
         };
 
-        function createBubble (x, y) {
+        function createBubble (x, y, segment) {
             var bubble = document.createElementNS("http://www.w3.org/2000/svg", "circle");
             bubble.setAttribute('fill', '#C7B7DF');
             bubble.setAttribute('cx', x);
             bubble.setAttribute('cy', y);
             bubble.setAttribute('r', '4.5');
+
+            if (segment) {
+                bubble.setAttribute('segment', segment);
+            }
 
             img.appendChild(bubble);
 
@@ -116,13 +120,12 @@
                     createBubble(coords.flaskTube.start.x, coords.flaskTube.start.y)
                 ],
                 tube: [
-                    createBubble(coords.tube[0].x, coords.tube[0].y),
-                    createBubble(coords.tube[1].x, coords.tube[1].y),
-                    createBubble(coords.tube[2].x, coords.tube[2].y),
-                    createBubble(coords.tube[3].x, coords.tube[3].y),
-                    createBubble(coords.tube[4].x, coords.tube[4].y),
-                    createBubble(coords.tube[4].x, coords.tube[4].y + 100)
-
+                    createBubble(coords.tube[0].x, coords.tube[0].y + 20, 0),
+                    createBubble(coords.tube[1].x, coords.tube[1].y, 1),
+                    createBubble(coords.tube[2].x, coords.tube[2].y, 2),
+                    createBubble(coords.tube[3].x, coords.tube[3].y, 3),
+                    createBubble(coords.tube[4].x, coords.tube[4].y, 4),
+                    createBubble(coords.tube[4].x, coords.tube[4].y + 100, 4)
                 ]
             };
 
@@ -154,7 +157,8 @@
         }
 
         function animateTube (delta) {
-           var moveAmount = 30 / delta;
+           var moveAmount = 30 / delta,
+               bubble, y;
 
             for (var i = 0; i < bubbles.tube.length; i++) {
                 bubble = bubbles.flaskTube[i];
