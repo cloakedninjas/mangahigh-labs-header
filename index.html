@@ -114,7 +114,7 @@
     bubble.setAttribute('cy', y);
     bubble.setAttribute('r', '4.5');
 
-    if (segment) {
+    if (segment !== undefined) {
       bubble.setAttribute('segment', segment);
     }
 
@@ -153,6 +153,7 @@
         delta = now - lastTime;
 
     animateFlaskTube(delta);
+    animateTube(delta);
 
     requestAnimationFrame(animate);
 
@@ -160,7 +161,9 @@
   }
 
   function animateFlaskTube(delta) {
-    var moveAmount = 30 / delta;
+    var moveAmount = 30 / delta,
+        y = null,
+        bubble;
 
     for (var i = 0; i < bubbles.flaskTube.length; i++) {
       bubble = bubbles.flaskTube[i];
@@ -177,18 +180,72 @@
 
   function animateTube(delta) {
     var moveAmount = 30 / delta,
-        bubble, y;
+        bubble, segment, x, y;
 
     for (var i = 0; i < bubbles.tube.length; i++) {
-      bubble = bubbles.flaskTube[i];
+      bubble = bubbles.tube[i];
+      segment = parseInt(bubble.getAttribute('segment'));
+      x = 0;
+      y = 0;
 
-      y = parseFloat(bubble.getAttribute('cy')) - moveAmount;
+      switch (segment) {
+        case 0:
+          y = parseFloat(bubble.getAttribute('cy')) + moveAmount;
 
-      if (y <= coords.flaskTube.end.y) {
-        y = coords.flaskTube.start.y;
+          if (y >= coords.tube[1].y) {
+            y = coords.tube[1].y;
+            bubble.setAttribute('segment', 1);
+          }
+
+          break;
+
+        case 1:
+          x = parseFloat(bubble.getAttribute('cx')) + moveAmount;
+
+          if (x >= coords.tube[2].x) {
+            x = coords.tube[2].x;
+            bubble.setAttribute('segment', 2);
+          }
+
+          break;
+
+        case 2:
+          y = parseFloat(bubble.getAttribute('cy')) - moveAmount;
+
+          if (y <= coords.tube[3].y) {
+            y = coords.tube[3].y;
+            bubble.setAttribute('segment', 3);
+          }
+
+          break;
+
+        case 3:
+          x = parseFloat(bubble.getAttribute('cx')) + moveAmount;
+
+          if (x >= coords.tube[4].x) {
+            x = coords.tube[4].x;
+            bubble.setAttribute('segment', 4);
+          }
+
+          break;
+
+        case 4:
+          y = parseFloat(bubble.getAttribute('cy')) + moveAmount;
+
+          if (y >= coords.tube[5].y) {
+            x = coords.tube[0].x;
+            y = coords.tube[0].y;
+            bubble.setAttribute('segment', 0);
+          }
+
+          break;
       }
 
-      moveBubble(bubble, null, y);
+
+
+
+
+      moveBubble(bubble, x, y);
     }
   }
 
